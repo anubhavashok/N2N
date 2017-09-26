@@ -1,0 +1,4 @@
+*.pyc
+parent_models/*
+*.pyc
+.DS_Store
