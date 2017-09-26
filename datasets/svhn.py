@@ -6,12 +6,10 @@ from torch.autograd import Variable
 
 net = None
 best_accuracy = 0
-batch_size = 200
 kwargs = {'num_workers': 1, 'pin_memory': True}
 
-args = lambda: None
-args.cuda = True
-args.batch_size = 128
+cuda = True
+batch_size = 200 
 
 def target_transform(target):
     return int(target[0]) - 1
@@ -40,7 +38,8 @@ def test():
     global best_accuracy
     correct = 0
     for idx, (data, target) in enumerate(test_loader):
-        data, target = data.cuda(), target.cuda()
+        if cuda:
+            data, target = data.cuda(), target.cuda()
         data, target = Variable(data, volatile=True), Variable(target)
 
         # do the forward pass

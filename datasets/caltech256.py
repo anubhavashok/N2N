@@ -9,9 +9,8 @@ from glob import glob
 import numpy as np
 from torch import optim
 
-args = lambda: None
-args.cuda = True
-args.batch_size = 128
+cuda = True
+batch_size = 128
 
 def load_img(filepath):
     img = Image.open(filepath).convert('RGB')
@@ -68,9 +67,9 @@ class Caltech256(data.Dataset):
     def __len__(self):
         return len(self.filepaths)
 
-kwargs = {'num_workers': 1, 'pin_memory': True} if args.cuda else {}
-train_loader = torch.utils.data.DataLoader(Caltech256(split='train'), batch_size=args.batch_size, shuffle=True, **kwargs)
-test_loader = torch.utils.data.DataLoader(Caltech256(split='test'), batch_size=args.batch_size, **kwargs) 
+kwargs = {'num_workers': 1, 'pin_memory': True} if cuda else {}
+train_loader = torch.utils.data.DataLoader(Caltech256(split='train'), batch_size=batch_size, shuffle=True, **kwargs)
+test_loader = torch.utils.data.DataLoader(Caltech256(split='test'), batch_size=batch_size, **kwargs) 
 optimizer = None
 ceLoss = nn.CrossEntropyLoss()
 lr = 0.01
