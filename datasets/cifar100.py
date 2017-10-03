@@ -8,17 +8,6 @@ from torch.autograd import Variable
 from torchvision import datasets, transforms
 from torchvision import models
 
-# Training settings
-parser.add_argument('--batch-size', type=int, default=200, metavar='N', help='batch size of train')
-parser.add_argument('--epochs', type=int, default=5, metavar='N', help='number of epochs to train for')
-parser.add_argument('--learning-rate', type=float, default=1e-3, metavar='LR', help='learning rate')
-parser.add_argument('--momentum', type=float, default=0.9, metavar='M', help='percentage of past parameters to store')
-parser.add_argument('--no-cuda', action='store_true', default=False, help='use cuda for training')
-parser.add_argument('--log-schedule', type=int, default=10, metavar='N', help='number of epochs to save snapshot after')
-parser.add_argument('--seed', type=int, default=1, help='set seed to some constant value to reproduce experiments')
-parser.add_argument('--model_name', type=str, default=None, help='Use a pretrained model')
-parser.add_argument('--want_to_test', type=bool, default=False, help='make true if you just want to test')
-
 batch_size = 200
 lr = 1e-3
 log_schedule = 10
