@@ -11,13 +11,13 @@ from torch import autograd
 
 
 class Controller:
+    # def __init__(self, controllerType, input_size, hidden_size, num_layers, lr=0.003, skipSupport=False):
     def __init__(self, controller, lr=0.003, skipSupport=False):
         self.controller = controller
         self.optimizer = optim.Adam(self.controller.parameters(), lr=lr)
         self.skipSupport = skipSupport
 
-    def update_controller(self, actionSeqs, avgR):
-        print('Reinforcing for epoch %d' %e)
+    def update_controller(self, actionSeqs, avgR, b):
         for actions in actionSeqs:
             if isinstance(actions, list):
                 for action in actions:
@@ -58,8 +58,8 @@ def Reward(acc, params, baseline_acc, baseline_params):
     R_a = (acc/baseline_acc) #if acc > 0.92 else -1
     C = (float(baseline_params - params))/baseline_params
     R_c = C*(2-C)
-    if constrained:
-        return getConstrainedReward(R_a, R_c, cons, vars, iter)
+    #if constrained:
+    #    return getConstrainedReward(R_a, R_c, cons, vars, iter)
     return (R_a) * (R_c)
 
 previousModels = {}
@@ -91,7 +91,8 @@ def rollout_batch(model, controller, architecture, dataset, N, e):
         print('Val accuracy: %f' % acc)
     for i in range(len(newModels)):
         print('Compression: %f' % (1.0 - (float(numParams(newModels[i]))/architecture.parentSize)))
-    R = [Reward(accs[i], numParams(newModels[i]), architecture.baseline_acc, architecture.parentSize, iter=int(e), constrained=constrained, vars=[numParams(newModels[i])], cons=[1700000]) for i in range(len(accs))]
+    #R = [Reward(accs[i], numParams(newModels[i]), architecture.baseline_acc, architecture.parentSize, iter=int(e), constrained=constrained, vars=[numParams(newModels[i])], cons=[1700000]) for i in range(len(accs))]
+    R = [Reward(accs[i], numParams(newModels[i]), architecture.baseline_acc, architecture.parentSize) for i in range(len(accs))]
     for i in range(len(idxs)):
         Rs[idxs[i]] = R[i]
     for i in range(len(Rs)):
@@ -99,7 +100,7 @@ def rollout_batch(model, controller, architecture, dataset, N, e):
     return (Rs, actionSeqs, newModels)
 
 
-def rollouts(N, model, controller, architecture, dataset, e):
+def rollouts(N, model, controller, architecture, dataset, e, size_constraint=None, acc_constraint=None):
     Rs = []
     actionSeqs = []
     models = []

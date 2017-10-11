@@ -30,7 +30,7 @@ parser.add_argument('--debug', type=bool, required=False, default=False,
                     help='Debug mode')
 parser.add_argument('--size_constraint', type=int, required=False,
                     help='Add a constraint on size in # parameters')
-parser.add_argument('--accuracy_constraint', type=int, required=False,
+parser.add_argument('--acc_constraint', type=int, required=False,
                     help='Add a constraint on accuracy in [0, 1]')
 args = parser.parse_args()
 
@@ -102,6 +102,11 @@ elif args.mode == 'shrinkage':
 else:
     print('Mode not known: ' + args.mode)
 
+
+# ----CONSTRAINTS----
+size_constraint = args.size_constraint
+acc_constraint = args.acc_constraint
+
 # Identify baseline accuracy of base model
 dataset.net = model.cuda() if args.cuda else model
 print('Testing parent model to determine baseline accuracy')
@@ -120,14 +125,14 @@ R_sum = 0
 b = 0
 
 epochs = 100
-N = 1
+N = 5
 prevRs = [0] * N
 controller = Controller(controller, lr=lr, skipSupport=skipSupport)
 architecture = Architecture(model, datasetInputTensor, args.dataset, baseline_acc=baseline_acc)
 # ----MAIN LOOP----
 for e in range(epochs):
     # Compute N rollouts
-    (Rs, actionSeqs, models) = rollouts(N, model, controller, architecture, dataset, e)
+    (Rs, actionSeqs, models) = rollouts(N, model, controller, architecture, dataset, e, size_constraint=size_constraint, acc_constraint=acc_constraint)
     # Compute average reward
     avgR = np.mean(Rs)
     print('Average reward: %f' % avgR)
@@ -136,7 +141,8 @@ for e in range(epochs):
     b = R_sum/float(e+1)
     R_sum = R_sum + avgR
     # Update controller
-    controller.update_controller(actionSeqs, avgR)
+    print('Reinforcing for epoch %d' % e)
+    controller.update_controller(actionSeqs, avgR, b)
 
 torch.save(controller, controllerSavePath)
 resultsFile = open(modelSavePath + 'results.txt', "w")
