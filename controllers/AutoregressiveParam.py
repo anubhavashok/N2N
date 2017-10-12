@@ -22,12 +22,16 @@ class LSTMAutoParams(nn.Module):
         self.softmax = nn.Softmax()
     
     def forwardLayers(self, input, hns, cns, layers):
-        for i in range(len(layers)):
-            (hn, cn) = layers[i](input, (hns[i], cns[i]))
-            input = hn
-            hns[i] = hn
-            cns[i] = cn
-        return hn, (hns, cns)
+        new_hns = []
+        new_cns = []
+        (hn, cn) = layers[0](input, (hns[0], cns[0]))
+        new_hns.append(hn)
+        new_cns.append(cn)
+        for i in range(1, len(layers)):
+            (hn, cn) = layers[i](hn, (hns[i], cns[i]))
+            new_hns.append(hn)
+            new_cns.append(cn)
+        return hn, (new_hns, new_cns)
     
     def forward(self, input, hx):
         actions = []

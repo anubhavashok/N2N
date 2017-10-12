@@ -92,15 +92,20 @@ lr = 0.003
 if args.mode == 'removal':
     num_output = 2
     from controllers.LSTM import * 
-    controller = LSTM(num_input, num_output, num_hidden, num_layers, bidirectional=True)
+    controllerClass = LSTM
+    #controller = LSTM(num_input, num_output, num_hidden, num_layers, bidirectional=True)
+    extraControllerParams = {'bidirectional': True}
     lr = 0.003
 elif args.mode == 'shrinkage':
     num_output = len(lookup)
     from controllers.AutoregressiveParam import *
-    controller = LSTMAutoParams(num_input, num_output, num_hidden, num_layers, lookup)
+    controllerClass = LSTMAutoParams
+    extraControllerParams = {'lookup': lookup}
+    #controller = LSTMAutoParams(num_input, num_output, num_hidden, num_layers, lookup)
     lr = 0.1
 else:
     print('Mode not known: ' + args.mode)
+    quit()
 
 
 # ----CONSTRAINTS----
@@ -125,10 +130,10 @@ R_sum = 0
 b = 0
 
 epochs = 100
-N = 5
+N = 5 
 prevRs = [0] * N
-controller = Controller(controller, lr=lr, skipSupport=skipSupport)
-architecture = Architecture(model, datasetInputTensor, args.dataset, baseline_acc=baseline_acc)
+controller = Controller(controllerClass, num_input, num_output, num_hidden, num_layers, lr=lr, skipSupport=skipSupport, kwargs=extraControllerParams)
+architecture = Architecture(args.mode, model, datasetInputTensor, args.dataset, baseline_acc=baseline_acc, lookup=lookup)
 # ----MAIN LOOP----
 for e in range(epochs):
     # Compute N rollouts
@@ -142,7 +147,7 @@ for e in range(epochs):
     R_sum = R_sum + avgR
     # Update controller
     print('Reinforcing for epoch %d' % e)
-    controller.update_controller(actionSeqs, avgR, b)
+    controller.update_controller(avgR, b)
 
 torch.save(controller, controllerSavePath)
 resultsFile = open(modelSavePath + 'results.txt', "w")

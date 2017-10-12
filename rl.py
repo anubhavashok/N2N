@@ -11,14 +11,19 @@ from torch import autograd
 
 
 class Controller:
-    # def __init__(self, controllerType, input_size, hidden_size, num_layers, lr=0.003, skipSupport=False):
-    def __init__(self, controller, lr=0.003, skipSupport=False):
-        self.controller = controller
+    def __init__(self, controllerClass, input_size, output_size, hidden_size, num_layers, lr=0.003, skipSupport=False, kwargs={}):
+        self.input_size = input_size
+        self.output_size = output_size 
+        self.hidden_size = hidden_size
+        self.num_layers = num_layers
+        self.kwargs = kwargs
+        self.controller = controllerClass(input_size, output_size, hidden_size, num_layers, **kwargs)
         self.optimizer = optim.Adam(self.controller.parameters(), lr=lr)
         self.skipSupport = skipSupport
+        self.actionSeqs = []
 
-    def update_controller(self, actionSeqs, avgR, b):
-        for actions in actionSeqs:
+    def update_controller(self, avgR, b):
+        for actions in self.actionSeqs:
             if isinstance(actions, list):
                 for action in actions:
                     action.reinforce(avgR - b)
@@ -26,19 +31,21 @@ class Controller:
                 actions.reinforce(avgR - b)
             self.optimizer.zero_grad()
             autograd.backward(actions, [None for _ in actions])
-        self.optimizer.step()
+            self.optimizer.step()
+        self.actionSeqs = []
 
     def rolloutActions(self, layers):
-        num_input  = self.controller.lstm.input_size
-        num_hidden = self.controller.lstm.hidden_size
-        num_layers = self.controller.lstm.num_layers
-        num_directions = 2 if self.controller.lstm.bidirectional else 1
+        num_input  = self.input_size
+        num_hidden = self.hidden_size
+        num_layers = self.num_layers
+        num_directions = 2 if (('bidirectional' in self.kwargs) and (self.kwargs['bidirectional'])) else 1
         hn = Variable(torch.zeros(num_layers * num_directions, 1, num_hidden))
         cn = Variable(torch.zeros(num_layers * num_directions, 1, num_hidden))
         input = Variable(torch.Tensor(len(layers), 1, num_input))
         for i in range(len(layers)):
             input[i] = Layer(layers[i]).toTorchTensor(skipSupport=self.skipSupport)
         actions = self.controller(input, (hn, cn))
+        self.actionSeqs.append(actions)
         return actions
 
 
