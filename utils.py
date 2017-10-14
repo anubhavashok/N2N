@@ -2,6 +2,7 @@ import torch
 from torch import nn, optim
 from torch.autograd import Variable
 from torchvision import transforms
+import os
 
 from Model import Model
 from model.resnet import *
@@ -360,4 +361,4 @@ def layersFromModule(m):
 
 def saveModels(epoch, models, modelSavePath):
     for i in range(len(models)):
-        torch.save(models[i], modelSavePath + '%f_%f.net' %(epoch, i))
+        torch.save(models[i], os.path.join(modelSavePath, '%f_%f.net' %(epoch, i)))

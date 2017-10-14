@@ -8,6 +8,7 @@ from copy import deepcopy
 import argparse
 from rl import *
 from architecture import *
+import os
 import warnings
 warnings.filterwarnings("ignore")
 with warnings.catch_warnings():
@@ -150,5 +151,5 @@ for e in range(epochs):
     controller.update_controller(avgR, b)
 
 torch.save(controller, controllerSavePath)
-resultsFile = open(modelSavePath + 'results.txt', "w")
+resultsFile = open(os.path.join(modelSavePath, 'results.txt'), "w")
 output_results(resultsFile, accsPerModel, paramsPerModel, rewardsPerModel)
