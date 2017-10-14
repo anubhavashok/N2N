@@ -6,9 +6,6 @@
 Run using run.py.
 Specify the pre-trained model and dataset to use as arguments.
 Detailed instructions can be found in the help menu in run.py
-```
-python run.py
-```
 ### Pre-requisites
 There are some pre-requisites for running this
 1. python >= 2.7
