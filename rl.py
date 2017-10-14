@@ -17,7 +17,10 @@ class Controller:
         self.hidden_size = hidden_size
         self.num_layers = num_layers
         self.kwargs = kwargs
-        self.controller = controllerClass(input_size, output_size, hidden_size, num_layers, **kwargs)
+        if isinstance(controllerClass, basestring):
+            self.controller = torch.load(controllerClass)
+        else:
+            self.controller = controllerClass(input_size, output_size, hidden_size, num_layers, **kwargs)
         self.optimizer = optim.Adam(self.controller.parameters(), lr=lr)
         self.skipSupport = skipSupport
         self.actionSeqs = []

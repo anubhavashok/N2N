@@ -33,6 +33,8 @@ parser.add_argument('--size_constraint', type=int, required=False,
                     help='Add a constraint on size in # parameters')
 parser.add_argument('--acc_constraint', type=float, required=False,
                     help='Add a constraint on accuracy in [0, 1]')
+parser.add_argument('--controller', type=str, required=False,
+                    help='Path to a previously trained controller')
 args = parser.parse_args()
 
 if len(args.gpuids) > 1:
@@ -132,6 +134,8 @@ b = 0
 epochs = 100
 N = 5 
 prevRs = [0] * N
+if args.controller:
+    controllerClass = args.controller
 controller = Controller(controllerClass, num_input, num_output, num_hidden, num_layers, lr=lr, skipSupport=skipSupport, kwargs=extraControllerParams)
 architecture = Architecture(args.mode, model, datasetInputTensor, args.dataset, baseline_acc=baseline_acc, lookup=lookup)
 # ----MAIN LOOP----
