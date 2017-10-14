@@ -40,7 +40,7 @@ The pre-trained polcies are specified to run the transfer learning experiments
 
 
 ## Experiments folder
-The experiments folder contains various variants of layer removal and shrinkage that were tried for the actual paper. These were mainly experiments which require substantial modifications to the main code or were used on earlier iterations of the project
+The experiments folder contains various variants of layer removal and shrinkage that were tried for the actual paper. These were mainly experiments which require substantial modifications to the main code or were used on earlier iterations of the project.
 They have to be moved to the main folder before being run.
 The following describes each experiment
 1. ar\_run\_layer\_clean.py - Layer removal using the Autoregressive controller
