@@ -51,7 +51,7 @@ class Controller:
 
 def getEpsilon(iter, max_iter=15.0):
     return min(1, max(0, (1-iter/float(max_iter))**4)) #return 0
-
+'''
 def getConstrainedReward(R_a, R_c, cons, vars, iter):
     eps = getEpsilon(iter)
     modelSize = vars[0]
@@ -60,17 +60,24 @@ def getConstrainedReward(R_a, R_c, cons, vars, iter):
         return (eps - 1) + eps * (R_a * R_c)
     else:
         return R_a * R_c
+'''
+def getConstrainedReward(R_a, R_c, acc, params, acc_constraint, size_constraint, epoch, soft=True):
+    eps = getEpsilon(epoch) if soft else 0
+    if (size_constraint and params > size_constraint) or (acc_constraint and acc < acc_constraint):
+        return (eps - 1) + eps * (R_a * R_c)
+    return R_a * R_c
 
-def Reward(acc, params, baseline_acc, baseline_params):
+
+def Reward(acc, params, baseline_acc, baseline_params, size_constraint=None, acc_constraint=None, epoch=-1):
     R_a = (acc/baseline_acc) #if acc > 0.92 else -1
     C = (float(baseline_params - params))/baseline_params
     R_c = C*(2-C)
-    #if constrained:
-    #    return getConstrainedReward(R_a, R_c, cons, vars, iter)
+    if size_constraint or acc_constraint:
+        return getConstrainedReward(R_a, R_c, acc, params, acc_constraint, size_constraint, epoch)
     return (R_a) * (R_c)
 
 previousModels = {}
-def rollout_batch(model, controller, architecture, dataset, N, e):
+def rollout_batch(model, controller, architecture, dataset, N, e, acc_constraint=None, size_constraint=None):
     newModels = []
     idxs = []
     Rs = [0]*N
@@ -99,7 +106,7 @@ def rollout_batch(model, controller, architecture, dataset, N, e):
     for i in range(len(newModels)):
         print('Compression: %f' % (1.0 - (float(numParams(newModels[i]))/architecture.parentSize)))
     #R = [Reward(accs[i], numParams(newModels[i]), architecture.baseline_acc, architecture.parentSize, iter=int(e), constrained=constrained, vars=[numParams(newModels[i])], cons=[1700000]) for i in range(len(accs))]
-    R = [Reward(accs[i], numParams(newModels[i]), architecture.baseline_acc, architecture.parentSize) for i in range(len(accs))]
+    R = [Reward(accs[i], numParams(newModels[i]), architecture.baseline_acc, architecture.parentSize, size_constraint=size_constraint, acc_constraint=acc_constraint, epoch=e) for i in range(len(accs))]
     for i in range(len(idxs)):
         Rs[idxs[i]] = R[i]
     for i in range(len(Rs)):
@@ -111,6 +118,6 @@ def rollouts(N, model, controller, architecture, dataset, e, size_constraint=Non
     Rs = []
     actionSeqs = []
     models = []
-    (Rs, actionSeqs, models) = rollout_batch(copy.deepcopy(model), controller, architecture, dataset, N, e)
+    (Rs, actionSeqs, models) = rollout_batch(copy.deepcopy(model), controller, architecture, dataset, N, e, acc_constraint=acc_constraint, size_constraint=size_constraint)
     return (Rs, actionSeqs, models)
 

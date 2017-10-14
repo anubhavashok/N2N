@@ -13,7 +13,7 @@ warnings.filterwarnings("ignore")
 with warnings.catch_warnings():
     warnings.simplefilter('ignore')
 
-parser = argparse.ArgumentParser(description='N2N: Network to Network Compressin using Policy Gradient Reinforcement Learning')
+parser = argparse.ArgumentParser(description='N2N: Network to Network Compression using Policy Gradient Reinforcement Learning')
 parser.add_argument('mode', type=str, choices=['removal', 'shrinkage'],
                     help='Which mode to run the program')
 parser.add_argument('dataset', type=str, choices=['mnist', 'cifar10', 'cifar10_old', 'cifar100', 'svhn', 'caltech256'],
@@ -30,7 +30,7 @@ parser.add_argument('--debug', type=bool, required=False, default=False,
                     help='Debug mode')
 parser.add_argument('--size_constraint', type=int, required=False,
                     help='Add a constraint on size in # parameters')
-parser.add_argument('--acc_constraint', type=int, required=False,
+parser.add_argument('--acc_constraint', type=float, required=False,
                     help='Add a constraint on accuracy in [0, 1]')
 args = parser.parse_args()
 
@@ -91,9 +91,9 @@ lr = 0.003
 # ----MODE----
 if args.mode == 'removal':
     num_output = 2
+    #from controllers.ActorCriticLSTM import *
     from controllers.LSTM import * 
     controllerClass = LSTM
-    #controller = LSTM(num_input, num_output, num_hidden, num_layers, bidirectional=True)
     extraControllerParams = {'bidirectional': True}
     lr = 0.003
 elif args.mode == 'shrinkage':
@@ -101,7 +101,6 @@ elif args.mode == 'shrinkage':
     from controllers.AutoregressiveParam import *
     controllerClass = LSTMAutoParams
     extraControllerParams = {'lookup': lookup}
-    #controller = LSTMAutoParams(num_input, num_output, num_hidden, num_layers, lookup)
     lr = 0.1
 else:
     print('Mode not known: ' + args.mode)
@@ -138,6 +137,7 @@ architecture = Architecture(args.mode, model, datasetInputTensor, args.dataset, 
 for e in range(epochs):
     # Compute N rollouts
     (Rs, actionSeqs, models) = rollouts(N, model, controller, architecture, dataset, e, size_constraint=size_constraint, acc_constraint=acc_constraint)
+    saveModels(e, models, modelSavePath)
     # Compute average reward
     avgR = np.mean(Rs)
     print('Average reward: %f' % avgR)

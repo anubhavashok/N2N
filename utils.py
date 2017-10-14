@@ -356,3 +356,8 @@ def layersFromModule(m):
                 bottom[j].skipend = n - j - 1
         top.extend(bottom)
     return top
+
+
+def saveModels(epoch, models, modelSavePath):
+    for i in range(len(models)):
+        torch.save(models[i], modelSavePath + '%f_%f.net' %(epoch, i))
