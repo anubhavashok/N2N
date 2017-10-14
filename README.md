@@ -36,3 +36,16 @@ python test_model.py studentModels/resnet18_cifar10.net cifar10
 ```
 ### Pre-trained policies
 The pre-trained polcies are specified to run the transfer learning experiments
+
+
+
+## Experiments folder
+The experiments folder contains various variants of layer removal and shrinkage that were tried for the actual paper. These were mainly experiments which require substantial modifications to the main code or were used on earlier iterations of the project
+They have to be moved to the main folder before being run.
+The following describes each experiment
+1. ar\_run\_layer\_clean.py - Layer removal using the Autoregressive controller
+2. ar\_run\_param\_clean.py - Layer shrinkage for **Non-ResNet** convolutional models
+3. bd\_run\_layer\_clean.py - Layer removal for **Non-ResNet** convolutional models using the bidirectional controller
+4. ed\_run\_layer\_general.py - Layer removal for **Non-ResNet** convolutional models using the encoder-decoder controller
+5. resnet\_actor\_critic\_layer.py - Layer removal using the Actor-Critic controller
+6. resnet\_ar\_run\_layer\_clean.py - Layer removal for **ResNet** models using the Autoregressive controller
