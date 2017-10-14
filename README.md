@@ -1,17 +1,23 @@
 # N2N: Network to Network Compression using Policy Gradient Reinforcement Learning
-
+This is the code to run the model compression algorithm described in the paper.
+It currently supports trained models in pytorch. If you would like to use it with a model in another deep learning framework, it would have to be converted to pytorch first.
 [Link to ArXiV paper](https://arxiv.org/abs/1709.06030)
 
-## How to run
-Run using run.py.
-Specify the pre-trained model and dataset to use as arguments.
-Detailed instructions can be found in the help menu in run.py
-### Pre-requisites
-There are some pre-requisites for running this
-1. python >= 2.7
-2. pytorch >= 0.2
-3. torchvision >= 0.19
+## Dependencies
+There are some dependencies for running this
+1. [python](https://www.python.org/) >= 2.7
+2. [pytorch](http://pytorch.org/) >= 0.2
+3. [torchvision](http://pytorch.org/) >= 0.19
 
+## How to run
+1. Clone this repository using
+```
+git clone https://github.com/anubhavashok/N2N.git
+```
+2. Download teacher models from the links below
+
+3. Layer removal and Layer shrinkage instructions are described below 
+Additional detailed instructions can be found in the help menu in run.py
 ### Removal
 Here is an example command to train the layer removal policy on the cifar10 dataset using the resnet-18 model
 ```
