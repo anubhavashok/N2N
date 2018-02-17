@@ -1,7 +1,7 @@
-# N2N: Network to Network Compression using Policy Gradient Reinforcement Learning
+# N2N: Network to Network Compression using Policy Gradient Reinforcement Learning (ICLR 2018)
 This is the code to run the model compression algorithm described in the paper.
 It currently supports trained models in pytorch. If you would like to use it with a model in another deep learning framework, it would have to be converted to pytorch first.
-[Link to ArXiV paper](https://arxiv.org/abs/1709.06030)
+[Link to ICLR paper](https://openreview.net/pdf?id=B1hcZZ-AW)
 
 ## Dependencies
 There are some dependencies for running this
