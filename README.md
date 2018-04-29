@@ -31,7 +31,7 @@ python run.py shrinkage cifar10 teacherModels/resnet18_cifar10.net --model Stage
 ```
 
 ## Downloading models
-All models can be downloaded at this [link](https://cmu.box.com/s/v15vgm6mg9ryemkazkrgew6rjovctstv)
+All models can be downloaded at this [link](https://cmu.box.com/s/x7nvjssgwpp54xuyzc979ju5pjchw7z1)
 ### Pre-trained teacher models
 The teacher models are to be specified to run.py to train.
 ### Pre-trained student models
