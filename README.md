@@ -55,3 +55,14 @@ The following describes each experiment
 4. ed\_run\_layer\_general.py - Layer removal for **Non-ResNet** convolutional models using the encoder-decoder controller
 5. resnet\_actor\_critic\_layer.py - Layer removal using the Actor-Critic controller
 6. resnet\_ar\_run\_layer\_clean.py - Layer removal for **ResNet** models using the Autoregressive controller
+
+## Citing
+Please use the following bibtex to cite the paper:
+@inproceedings{
+ashok2018nn,
+title={N2N learning: Network to Network Compression via Policy Gradient Reinforcement Learning},
+author={Anubhav Ashok and Nicholas Rhinehart and Fares Beainy and Kris M. Kitani},
+booktitle={International Conference on Learning Representations},
+year={2018},
+url={https://openreview.net/pdf?id=B1hcZZ-AW},
+}
