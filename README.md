@@ -58,6 +58,7 @@ The following describes each experiment
 
 ## Citing
 Please use the following bibtex to cite the paper:
+```
 @inproceedings{
 ashok2018nn,
 title={N2N learning: Network to Network Compression via Policy Gradient Reinforcement Learning},
@@ -66,3 +67,4 @@ booktitle={International Conference on Learning Representations},
 year={2018},
 url={https://openreview.net/pdf?id=B1hcZZ-AW},
 }
+```
